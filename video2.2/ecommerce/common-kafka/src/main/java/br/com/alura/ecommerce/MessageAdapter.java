@@ -1,0 +1,21 @@
+package br.com.alura.ecommerce;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+
+import java.lang.reflect.Type;
+
+public class MessageAdapter implements JsonSerializer<Message> {
+    @Override
+    public JsonElement serialize(Message message, Type type, JsonSerializationContext context) {
+        var obj = new JsonObject();
+        // this is allowing other services to know my services internal implementation
+        // you can choose other approachs to serialize the type hint/information
+        obj.addProperty("type", message.getPayload().getClass().getName());
+        obj.add("payload", context.serialize(message.getPayload()));
+        obj.add("correlationId", context.serialize(message.getCorrelationID()));
+        return obj;
+    }
+}
